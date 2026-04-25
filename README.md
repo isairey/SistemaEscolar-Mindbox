@@ -75,10 +75,10 @@ El sistema está basado en una arquitectura en capas:
 
 ```bash id="mnb123"
 # Clonar repositorio
-git clone https://github.com/tu-usuario/minbox-school.git
+git clone https://github.com/isairey/SistemaEscolar-Mindbox.git
 
 # Entrar al proyecto
-cd minbox-school
+cd SistemaEscolar-Mindbox
 
 # Restaurar dependencias
 dotnet restore
