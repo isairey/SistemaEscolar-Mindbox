@@ -1,0 +1,87 @@
+version: '3.8'
+
+networks:
+  kafka-net:
+    name: devschool.kafka-cluster-network
+
+services:
+  kafka-1:
+    image: confluentinc/cp-kafka:latest
+    container_name: devschool.kafka-1
+    hostname: devschool.kafka-1
+    networks:
+      - kafka-net
+    ports:
+      - "29091:29091"
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@devschool.kafka-1:29092,2@devschool.kafka-2:29192,3@devschool.kafka-3:29292
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT,BROKER:PLAINTEXT
+      KAFKA_LISTENERS: BROKER://devschool.kafka-1:29090,CONTROLLER://devschool.kafka-1:29092,PLAINTEXT://0.0.0.0:29091
+      KAFKA_ADVERTISED_LISTENERS: BROKER://devschool.kafka-1:29090,PLAINTEXT://localhost:29091
+      KAFKA_INTER_BROKER_LISTENER_NAME: BROKER
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: "0"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: "3"
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: "3"
+      KAFKA_NUM_PARTITIONS: "1"
+      CLUSTER_ID: abcdefghijklmnopqrstuv
+
+  kafka-2:
+    image: confluentinc/cp-kafka:latest
+    container_name: devschool.kafka-2
+    hostname: devschool.kafka-2
+    networks:
+      - kafka-net
+    ports:
+      - "29092:29092"
+    environment:
+      KAFKA_NODE_ID: 2
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@devschool.kafka-1:29092,2@devschool.kafka-2:29192,3@devschool.kafka-3:29292
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT,BROKER:PLAINTEXT
+      KAFKA_LISTENERS: BROKER://devschool.kafka-2:29190,CONTROLLER://devschool.kafka-2:29192,PLAINTEXT://0.0.0.0:29092
+      KAFKA_ADVERTISED_LISTENERS: BROKER://devschool.kafka-2:29190,PLAINTEXT://localhost:29092
+      KAFKA_INTER_BROKER_LISTENER_NAME: BROKER
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: "0"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: "3"
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: "3"
+      KAFKA_NUM_PARTITIONS: "1"
+      CLUSTER_ID: abcdefghijklmnopqrstuv
+
+  kafka-3:
+    image: confluentinc/cp-kafka:latest
+    container_name: devschool.kafka-3
+    hostname: devschool.kafka-3
+    networks:
+      - kafka-net
+    ports:
+      - "29093:29093"
+    environment:
+      KAFKA_NODE_ID: 3
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@devschool.kafka-1:29092,2@devschool.kafka-2:29192,3@devschool.kafka-3:29292
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT,BROKER:PLAINTEXT
+      KAFKA_LISTENERS: BROKER://devschool.kafka-3:29290,CONTROLLER://devschool.kafka-3:29292,PLAINTEXT://0.0.0.0:29093
+      KAFKA_ADVERTISED_LISTENERS: BROKER://devschool.kafka-3:29290,PLAINTEXT://localhost:29093
+      KAFKA_INTER_BROKER_LISTENER_NAME: BROKER
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: "0"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: "3"
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: "3"
+      KAFKA_NUM_PARTITIONS: "1"
+      CLUSTER_ID: abcdefghijklmnopqrstuv
+      
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: kafka-ui
+    networks:
+      - kafka-net
+    ports:
+      - "8080:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: devschool.kafka-1:29090,devschool.kafka-2:29190,devschool.kafka-3:29290
+      DYNAMIC_CONFIG_ENABLED: "true"
